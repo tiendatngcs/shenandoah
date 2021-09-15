@@ -187,7 +187,7 @@ HeapWord* ShenandoahFreeSet::try_allocate_in(ShenandoahHeapRegion* r, Shenandoah
     ShenandoahMarkingContext* const ctx = _heap->complete_marking_context();
 
     r->set_affiliation(req.affiliation());
-    r->set_access_rate(req.access_rate());
+    // r->set_access_rate(req.access_rate());
     r->set_update_watermark(r->bottom());
     ctx->capture_top_at_mark_start(r);
 
@@ -204,6 +204,19 @@ HeapWord* ShenandoahFreeSet::try_allocate_in(ShenandoahHeapRegion* r, Shenandoah
   }
 
   in_new_region = r->is_empty();
+  //is young gen affiliation for sure
+  if (r->access_rate() == ShenandoahRegionAccessRate::NEUTRAL){
+    if (in_new_region){
+      r->set_access_rate(req.access_rate());
+    }
+    else{
+      // Try not to allocate in regions that had been allocated
+      return NULL;
+    }
+  }
+  else if (r->access_rate() != req.access_rate()) {
+    return NULL;
+  }
 
   HeapWord* result = NULL;
   size_t size = req.size();
