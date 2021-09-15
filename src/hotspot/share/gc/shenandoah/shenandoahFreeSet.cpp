@@ -205,7 +205,7 @@ HeapWord* ShenandoahFreeSet::try_allocate_in(ShenandoahHeapRegion* r, Shenandoah
 
   in_new_region = r->is_empty();
   //is young gen affiliation for sure
-  if (req.is_gc_alloc){
+  if (req.is_gc_alloc()){
     if (r->access_rate() == ShenandoahRegionAccessRate::NEUTRAL){
       if (in_new_region){
         r->set_access_rate(req.access_rate());
