@@ -361,7 +361,6 @@ inline oop ShenandoahHeap::try_evacuate_object(oop p, Thread* thread, Shenandoah
 
   // Try to install the new forwarding pointer.
   oop result = ShenandoahForwarding::try_update_forwardee(p, copy_val);
-  printf("%s | %s | line %d | Region of input: %ld | Region of copy: %ld | Region of return: %ld\n", __FILE__, __func__, __LINE__, heap_region_index_containing(p), heap_region_index_containing(copy_val), heap_region_index_containing(result));
   if (result == copy_val) {
     if (target_gen == OLD_GENERATION) {
       if (alloc_from_lab) {
