@@ -298,10 +298,10 @@ inline oop ShenandoahHeap::try_evacuate_object(oop p, Thread* thread, Shenandoah
         case YOUNG_GENERATION: {
            copy = allocate_from_gclab(thread, size, access_rate);
            if (copy == NULL){
-            printf("%s | %s | line %d | gclab failed, copy is null\n", __FILE__, __func__, __LINE__);
+            // printf("%s | %s | line %d | gclab failed, copy is null\n", __FILE__, __func__, __LINE__);
            }
            else {
-             printf("%s | %s | line %d | gclab allocation succeed\n", __FILE__, __func__, __LINE__);
+            //  printf("%s | %s | line %d | gclab allocation succeed\n", __FILE__, __func__, __LINE__);
            }
             // printf("%s | %s | line %d | Copy from young gen\n", __FILE__, __func__, __LINE__);
            break;
@@ -320,15 +320,15 @@ inline oop ShenandoahHeap::try_evacuate_object(oop p, Thread* thread, Shenandoah
       }
     }
     if (copy == NULL) {
-      printf("%s | %s | line %d | Not using Tlab\n", __FILE__, __func__, __LINE__);
+      // printf("%s | %s | line %d | Not using Tlab\n", __FILE__, __func__, __LINE__);
       ShenandoahAllocRequest req = ShenandoahAllocRequest::for_shared_gc(size, target_gen, access_rate);
       copy = allocate_memory(req);
       alloc_from_lab = false;
       if (copy == NULL){
-        printf("%s | %s | line %d | shared gc failed, copy is null\n", __FILE__, __func__, __LINE__);
+        // printf("%s | %s | line %d | shared gc failed, copy is null\n", __FILE__, __func__, __LINE__);
       }
       else {
-        printf("%s | %s | line %d | shared gc allocation succeed\n", __FILE__, __func__, __LINE__);
+        // printf("%s | %s | line %d | shared gc allocation succeed\n", __FILE__, __func__, __LINE__);
       }
     }
 #ifdef ASSERT
