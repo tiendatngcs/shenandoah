@@ -89,8 +89,8 @@ public:
     return ShenandoahAllocRequest(min_size, requested_size, _alloc_plab, ShenandoahRegionAffiliation::OLD_GENERATION, ShenandoahRegionAccessRate::NEUTRAL);
   }
 
-  static inline ShenandoahAllocRequest for_shared_gc(size_t requested_size, ShenandoahRegionAffiliation affiliation) {
-    return ShenandoahAllocRequest(0, requested_size, _alloc_shared_gc, affiliation, ShenandoahRegionAccessRate::NEUTRAL);
+  static inline ShenandoahAllocRequest for_shared_gc(size_t requested_size, ShenandoahRegionAffiliation affiliation, ShenandoahRegionAccessRate access_rate) {
+    return ShenandoahAllocRequest(0, requested_size, _alloc_shared_gc, affiliation, access_rate);
   }
 
   static inline ShenandoahAllocRequest for_shared(size_t requested_size) {

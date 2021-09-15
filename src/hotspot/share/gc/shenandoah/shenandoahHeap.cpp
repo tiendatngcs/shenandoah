@@ -1002,7 +1002,6 @@ HeapWord* ShenandoahHeap::allocate_memory(ShenandoahAllocRequest& req) {
 
   } else {
     assert(req.is_gc_alloc(), "Can only accept GC allocs here");
-    printf("GC alloc %s | %s | line %d | in_new_region=%d\n", __FILE__, __func__, __LINE__, in_new_region);
     result = allocate_memory_under_lock(req, in_new_region);
     // Do not call handle_alloc_failure() here, because we cannot block.
     // The allocation failure would be handled by the LRB slowpath with handle_alloc_failure_evac().
