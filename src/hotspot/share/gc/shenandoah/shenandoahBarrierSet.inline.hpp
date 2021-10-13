@@ -224,9 +224,14 @@ inline oop ShenandoahBarrierSet::AccessBarrier<decorators, BarrierSetT>::oop_loa
 
 template <DecoratorSet decorators, typename BarrierSetT>
 inline oop ShenandoahBarrierSet::AccessBarrier<decorators, BarrierSetT>::oop_load_in_heap_at(oop base, ptrdiff_t offset) {
+  // access_counter
+  if (base != NULL){
+    base->add_access_counter(1);
+  }
+
   oop value = Raw::oop_load_in_heap_at(base, offset);
 
-  // Access counter
+  // access_counter
   if (value != NULL){
     value->add_access_counter(1);
     // printf("Barrier triggered at %s | %s | line %d | access_counter=%lu\n", __FILE__, __func__, __LINE__, value->access_counter());
@@ -268,11 +273,9 @@ inline void ShenandoahBarrierSet::AccessBarrier<decorators, BarrierSetT>::oop_st
   // Access counter
   if (base != NULL){
     base->add_access_counter(1);
-    // printf("Barrier triggered at %s | %s | line %d | access_counter=%lu\n", __FILE__, __func__, __LINE__, base->access_counter());
   }
   if (value != NULL){
     value->add_access_counter(1);
-    // printf("Barrier triggered at %s | %s | line %d | access_counter=%lu\n", __FILE__, __func__, __LINE__, value->access_counter());
   }
 
   oop_store_in_heap(AccessInternal::oop_field_addr<decorators>(base, offset), value);
@@ -309,6 +312,16 @@ inline oop ShenandoahBarrierSet::AccessBarrier<decorators, BarrierSetT>::oop_ato
 
 template <DecoratorSet decorators, typename BarrierSetT>
 inline oop ShenandoahBarrierSet::AccessBarrier<decorators, BarrierSetT>::oop_atomic_cmpxchg_in_heap_at(oop base, ptrdiff_t offset, oop compare_value, oop new_value) {
+  // access_counter
+  if (base != NULL){
+    base->add_access_counter(1);
+  }
+  if (compare_value != NULL){
+    compare_value->add_access_counter(1);
+  }
+  if (new_value != NULL){
+    new_value->add_access_counter(1);
+  }
   return oop_atomic_cmpxchg_in_heap(AccessInternal::oop_field_addr<decorators>(base, offset), compare_value, new_value);
 }
 
@@ -337,12 +350,25 @@ inline oop ShenandoahBarrierSet::AccessBarrier<decorators, BarrierSetT>::oop_ato
 
 template <DecoratorSet decorators, typename BarrierSetT>
 inline oop ShenandoahBarrierSet::AccessBarrier<decorators, BarrierSetT>::oop_atomic_xchg_in_heap_at(oop base, ptrdiff_t offset, oop new_value) {
+  if (base != NULL){
+    base->add_access_counter(1);
+  }
+  if (new_value != NULL){
+    new_value->add_access_counter(1);
+  }
   return oop_atomic_xchg_in_heap(AccessInternal::oop_field_addr<decorators>(base, offset), new_value);
 }
 
 // Clone barrier support
 template <DecoratorSet decorators, typename BarrierSetT>
 void ShenandoahBarrierSet::AccessBarrier<decorators, BarrierSetT>::clone_in_heap(oop src, oop dst, size_t size) {
+  // access_counter
+  if (src != NULL){
+    src->add_access_counter(1);
+  }
+  if (dst != NULL){
+    dst->add_access_counter(1);
+  }
   if (ShenandoahCloneBarrier) {
     ShenandoahBarrierSet::barrier_set()->clone_barrier_runtime(src);
   }
@@ -354,6 +380,14 @@ template <typename T>
 bool ShenandoahBarrierSet::AccessBarrier<decorators, BarrierSetT>::oop_arraycopy_in_heap(arrayOop src_obj, size_t src_offset_in_bytes, T* src_raw,
                                                                                          arrayOop dst_obj, size_t dst_offset_in_bytes, T* dst_raw,
                                                                                          size_t length) {
+  // access_counter
+  if (src_obj != NULL){
+    src_obj->add_access_counter(1);
+  }
+  if (dst_obj != NULL){
+    dst_obj->add_access_counter(1);
+  }
+
   T* src = arrayOopDesc::obj_offset_to_raw(src_obj, src_offset_in_bytes, src_raw);
   T* dst = arrayOopDesc::obj_offset_to_raw(dst_obj, dst_offset_in_bytes, dst_raw);
 
